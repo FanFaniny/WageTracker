@@ -50,14 +50,15 @@ class EarningsCalculator {
         this.frequencySelect.addEventListener('change', () => this.updateCalculations());
         this.hoursPerWeekInput.addEventListener('input', () => this.updateCalculations());
         
-        // Fixed: add safety check for reset earnings button
+        // Add safety checks for both reset buttons
         if (this.resetEarningsBtn) {
             this.resetEarningsBtn.addEventListener('click', () => this.resetEarnings());
         }
         
-        this.resetTrackerBtn.addEventListener('click', () => this.resetWorkHoursTracker());
+        if (this.resetTrackerBtn) {
+            this.resetTrackerBtn.addEventListener('click', () => this.resetWorkHoursTracker());
+        }
         
-        // New: manual hours input handlers
         this.addManualHoursBtn.addEventListener('click', () => this.addManualHours());
         this.manualHoursInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') this.addManualHours();
@@ -147,14 +148,26 @@ class EarningsCalculator {
         this.totalWorkHours = 0;
         this.updateWorkHoursTracker();
         localStorage.setItem(this.storageKeys.totalWorkHours, '0');
-        this.saveState();
+        // Also update timerState to reflect reset
+        const timerState = {
+            isRunning: this.isRunning,
+            startTime: this.startTime,
+            totalEarnings: this.totalEarnings
+        };
+        localStorage.setItem(this.storageKeys.timerState, JSON.stringify(timerState));
     }
 
     // New: Reset earnings counter
     resetEarnings() {
         this.totalEarnings = 0;
         this.mainCounter.textContent = '0,00000 €';
-        this.saveState(); // This now saves earnings in timerState
+        // Explicitly update timerState in localStorage
+        const timerState = {
+            isRunning: false,
+            startTime: null,
+            totalEarnings: 0
+        };
+        localStorage.setItem(this.storageKeys.timerState, JSON.stringify(timerState));
     }
 
     updateCalculations() {
