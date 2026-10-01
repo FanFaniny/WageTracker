@@ -43,6 +43,7 @@
                         <option value="yearly">Yearly Salary</option>
                         <option value="weekly">Weekly Salary</option>
                         <option value="daily">Daily Salary</option>
+                        <option value="hourly">Hourly Rate</option>
                     </select>
                 </div>
 
@@ -61,8 +62,26 @@
                     <span>TOTAL WORK HOURS TRACKED</span>
                     <button class="reset-tracker-btn" id="resetTrackerBtn">RESET</button>
                 </div>
-                <div class="tracker-value" id="workHoursTracker">0,00</div>
-                <div class="tracker-label">HOURS</div>
+                <div class="tracker-display">
+                    <div class="tracker-unit">
+                        <div class="tracker-value" id="trackerHours">00</div>
+                        <div class="tracker-label">HOURS</div>
+                    </div>
+                    <div class="tracker-separator">:</div>
+                    <div class="tracker-unit">
+                        <div class="tracker-value" id="trackerMinutes">00</div>
+                        <div class="tracker-label">MINUTES</div>
+                    </div>
+                    <div class="tracker-separator">:</div>
+                    <div class="tracker-unit">
+                        <div class="tracker-value" id="trackerSeconds">00</div>
+                        <div class="tracker-label">SECONDS</div>
+                    </div>
+                </div>
+                <div class="manual-input">
+                    <input type="number" id="manualHoursInput" placeholder="Add hours manually" step="0.01" min="0">
+                    <button id="addManualHours" class="add-hours-btn">ADD</button>
+                </div>
             </div>
         </div>
     </div>

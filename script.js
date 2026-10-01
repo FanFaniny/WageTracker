@@ -4,9 +4,12 @@ class EarningsCalculator {
         this.startTime = null;
         this.totalEarnings = 0;
         this.earningsPerSecond = 0;
-        this.totalWorkHours = 0; // New: track total accumulated work hours
+        this.lastSavedSecond = 0; // For throttling saveState calls
+        
+        // Fixed: separate base hours (saved) from current session hours
+        this.baseWorkHours = 0; // Saved hours from localStorage
+        this.currentSessionHours = 0; // Current running session
 
-        // New: localStorage keys for saving state
         this.storageKeys = {
             income: 'earningsCalc_income',
             frequency: 'earningsCalc_frequency',
@@ -16,7 +19,7 @@ class EarningsCalculator {
         };
 
         this.initializeElements();
-        this.loadSavedState(); // New: load saved data on page load
+        this.loadSavedState();
         this.bindEvents();
         this.updateCalculations();
     }
@@ -29,8 +32,13 @@ class EarningsCalculator {
         this.frequencySelect = document.getElementById('frequency');
         this.hoursPerWeekInput = document.getElementById('hoursPerWeek');
         this.startButton = document.getElementById('startButton');
-        // Removed old Bezos-related element references
-        this.workHoursTracker = document.getElementById('workHoursTracker');
+        
+        // New tracker elements
+        this.trackerHours = document.getElementById('trackerHours');
+        this.trackerMinutes = document.getElementById('trackerMinutes');
+        this.trackerSeconds = document.getElementById('trackerSeconds');
+        this.manualHoursInput = document.getElementById('manualHoursInput');
+        this.addManualHoursBtn = document.getElementById('addManualHours');
         this.resetTrackerBtn = document.getElementById('resetTrackerBtn');
     }
 
@@ -39,7 +47,13 @@ class EarningsCalculator {
         this.incomeInput.addEventListener('input', () => this.updateCalculations());
         this.frequencySelect.addEventListener('change', () => this.updateCalculations());
         this.hoursPerWeekInput.addEventListener('input', () => this.updateCalculations());
-        this.resetTrackerBtn.addEventListener('click', () => this.resetWorkHoursTracker()); // New: reset button listener
+        this.resetTrackerBtn.addEventListener('click', () => this.resetWorkHoursTracker());
+        
+        // New: manual hours input handlers
+        this.addManualHoursBtn.addEventListener('click', () => this.addManualHours());
+        this.manualHoursInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') this.addManualHours();
+        });
     }
 
     // New: Save all app state to browser localStorage
@@ -53,7 +67,7 @@ class EarningsCalculator {
         localStorage.setItem(this.storageKeys.income, this.incomeInput.value);
         localStorage.setItem(this.storageKeys.frequency, this.frequencySelect.value);
         localStorage.setItem(this.storageKeys.hoursPerWeek, this.hoursPerWeekInput.value);
-        localStorage.setItem(this.storageKeys.totalWorkHours, this.totalWorkHours.toString());
+        localStorage.setItem(this.storageKeys.totalWorkHours, this.baseWorkHours.toString()); // Fixed: save base hours, not total (avoids double counting)
     }
 
     // New: Load saved state from localStorage on page load
@@ -84,21 +98,43 @@ class EarningsCalculator {
             }
         }
 
-        // Restore saved work hours tracker value
+        // Restore saved work hours (base value only, no current session)
         const savedWorkHours = localStorage.getItem(this.storageKeys.totalWorkHours);
         if (savedWorkHours !== null) {
-            this.totalWorkHours = parseFloat(savedWorkHours);
+            this.baseWorkHours = parseFloat(savedWorkHours);
+            this.totalWorkHours = this.baseWorkHours;
             this.updateWorkHoursTracker();
         }
     }
 
-    // New: Update work hours tracker display
+    // New: Add manual hours to tracker
+    addManualHours() {
+        const hoursToAdd = parseFloat(this.manualHoursInput.value);
+        if (hoursToAdd > 0) {
+            this.baseWorkHours += hoursToAdd;
+            this.totalWorkHours = this.baseWorkHours + this.currentSessionHours;
+            this.updateWorkHoursTracker();
+            this.saveState();
+            this.manualHoursInput.value = '';
+        }
+    }
+
+    // New: Update work hours tracker display (H:M:S format)
     updateWorkHoursTracker() {
-        this.workHoursTracker.textContent = this.totalWorkHours.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        const totalSeconds = Math.floor(this.totalWorkHours * 3600);
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+        
+        this.trackerHours.textContent = hours.toString().padStart(2, '0');
+        this.trackerMinutes.textContent = minutes.toString().padStart(2, '0');
+        this.trackerSeconds.textContent = seconds.toString().padStart(2, '0');
     }
 
     // New: Reset work hours tracker to 0
     resetWorkHoursTracker() {
+        this.baseWorkHours = 0;
+        this.currentSessionHours = 0;
         this.totalWorkHours = 0;
         this.updateWorkHoursTracker();
         localStorage.setItem(this.storageKeys.totalWorkHours, '0');
@@ -124,6 +160,9 @@ class EarningsCalculator {
                 break;
             case 'yearly':
                 annualIncome = income;
+                break;
+            case 'hourly': // New: hourly rate calculation
+                annualIncome = income * hoursPerWeek * 52;
                 break;
         }
 
@@ -154,6 +193,7 @@ class EarningsCalculator {
         if (resetStartTime) {
             this.startTime = Date.now();
             this.totalEarnings = 0;
+            this.currentSessionHours = 0; // Reset current session
         }
         
         this.startButton.innerHTML = '<span class="play-icon">⏸</span> STOP TIMER';
@@ -166,13 +206,14 @@ class EarningsCalculator {
         this.isRunning = false;
         clearInterval(this.timer);
         
-        // Save final work hours when stopping timer
-        localStorage.setItem(this.storageKeys.totalWorkHours, this.totalWorkHours.toString());
+        // Save current session to base before stopping
+        this.baseWorkHours = this.totalWorkHours;
+        localStorage.setItem(this.storageKeys.totalWorkHours, this.baseWorkHours.toString());
         
         this.startButton.innerHTML = '<span class="play-icon">▶</span> START TIMER';
         this.startButton.classList.remove('stop');
         
-        this.saveState(); // New: persist state on stop
+        this.saveState();
     }
 
     updateEarnings() {
@@ -187,13 +228,16 @@ class EarningsCalculator {
         // Update main counter
         this.mainCounter.textContent = `${this.totalEarnings.toLocaleString('de-DE', { minimumFractionDigits: 5, maximumFractionDigits: 5 })} €`;
         
-        // Update total work hours (add current session time to saved total)
-        const currentSessionHours = elapsedSeconds / 3600;
-        this.totalWorkHours = parseFloat(localStorage.getItem(this.storageKeys.totalWorkHours) || 0) + currentSessionHours;
+        // Update work hours: base (saved) + current session
+        this.currentSessionHours = elapsedSeconds / 3600;
+        this.totalWorkHours = this.baseWorkHours + this.currentSessionHours;
         this.updateWorkHoursTracker();
         
-        // Save state periodically
-        this.saveState();
+        // Save state periodically (throttled to every second to avoid performance issues)
+        if (Math.floor(elapsedSeconds) > this.lastSavedSecond) {
+            this.saveState();
+            this.lastSavedSecond = Math.floor(elapsedSeconds);
+        }
     }
 }
 

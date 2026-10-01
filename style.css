@@ -222,6 +222,64 @@ header p {
   text-transform: uppercase;
 }
 
+/* New styles for H:M:S tracker and manual input */
+.tracker-display {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.tracker-unit {
+    text-align: center;
+    min-width: 60px;
+}
+
+.tracker-separator {
+    font-size: 2em;
+    font-weight: bold;
+    color: #00ff88;
+    margin-bottom: 15px;
+}
+
+.manual-input {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.manual-input input {
+    padding: 8px 12px;
+    background: rgba(40, 50, 40, 0.8);
+    border: 1px solid rgba(0, 255, 136, 0.3);
+    border-radius: 6px;
+    color: #ffffff;
+    font-size: 0.9em;
+    width: 140px;
+}
+
+.manual-input input:focus {
+    outline: none;
+    border-color: #00ff88;
+}
+
+.add-hours-btn {
+    padding: 8px 16px;
+    background: #00ff88;
+    border: none;
+    border-radius: 6px;
+    color: #000000;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.add-hours-btn:hover {
+    background: #00cc66;
+}
+
 @media (max-width: 600px) {
     .container {
         padding: 10px;
