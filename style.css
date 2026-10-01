@@ -182,6 +182,11 @@ header p {
   margin-bottom: 10px;
 }
 
+.tracker-buttons {
+    display: flex;
+    gap: 6px;
+}
+
 .tracker-header span {
   font-size: 0.8em;
   color: #888888;
@@ -193,13 +198,14 @@ header p {
   background: transparent;
   border: 1px solid #ff6b35;
   color: #ff6b35;
-  padding: 4px 12px;
+  padding: 4px 8px;
   border-radius: 6px;
-  font-size: 0.75em;
+  font-size: 0.7em;
   cursor: pointer;
   transition: all 0.2s ease;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  white-space: nowrap;
 }
 
 .reset-tracker-btn:hover {
@@ -295,5 +301,17 @@ header p {
     
     header h1 {
         font-size: 1.8em;
+    }
+}
+
+@media (max-width: 400px) {
+    .tracker-buttons {
+        flex-direction: column;
+        gap: 4px;
+    }
+    
+    .reset-tracker-btn {
+        padding: 3px 6px;
+        font-size: 0.65em;
     }
 }
