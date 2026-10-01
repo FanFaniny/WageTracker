@@ -1,0 +1,12 @@
+{
+  "name": "earnings-calculator",
+  "version": "1.0.0",
+  "description": "Real-Time Earnings Calculator",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
