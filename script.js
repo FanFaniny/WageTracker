@@ -16,8 +16,7 @@ class EarningsCalculator {
             frequency: 'earningsCalc_frequency',
             hoursPerWeek: 'earningsCalc_hoursPerWeek',
             timerState: 'earningsCalc_timerState',
-            totalWorkHours: 'earningsCalc_totalWorkHours',
-            earnings: 'earningsCalc_earnings' // New: for saving earnings
+            totalWorkHours: 'earningsCalc_totalWorkHours'
         };
 
         this.initializeElements();
@@ -77,7 +76,6 @@ class EarningsCalculator {
         localStorage.setItem(this.storageKeys.frequency, this.frequencySelect.value);
         localStorage.setItem(this.storageKeys.hoursPerWeek, this.hoursPerWeekInput.value);
         localStorage.setItem(this.storageKeys.totalWorkHours, this.baseWorkHours.toString()); // Fixed: save base hours, not total (avoids double counting)
-        localStorage.setItem(this.storageKeys.earnings, this.totalEarnings.toString());
     }
 
     // New: Load saved state from localStorage on page load
@@ -92,31 +90,21 @@ class EarningsCalculator {
         const savedHoursPerWeek = localStorage.getItem(this.storageKeys.hoursPerWeek);
         if (savedHoursPerWeek !== null) this.hoursPerWeekInput.value = savedHoursPerWeek;
 
-        // Restore timer state (do NOT auto-resume to avoid double-counting)
+        // Restore timer state (earnings are stored here)
         const savedTimerState = localStorage.getItem(this.storageKeys.timerState);
-        let state = null;
         if (savedTimerState) {
-            state = JSON.parse(savedTimerState);
+            const state = JSON.parse(savedTimerState);
+            this.totalEarnings = state.totalEarnings || 0;
+            this.mainCounter.textContent = `${this.totalEarnings.toLocaleString('de-DE', { minimumFractionDigits: 5, maximumFractionDigits: 5 })} €`;
+            
             if (state.isRunning) {
-                // Timer was running when page closed - stop it and save earnings
+                // Timer was running when page closed - stop it and save
                 this.isRunning = false;
-                this.totalEarnings = state.totalEarnings;
-                this.mainCounter.textContent = `${this.totalEarnings.toLocaleString('de-DE', { minimumFractionDigits: 5, maximumFractionDigits: 5 })} €`;
-                this.saveState(); // Save as stopped
-            } else {
-                this.totalEarnings = state.totalEarnings || 0;
-                this.mainCounter.textContent = `${this.totalEarnings.toLocaleString('de-DE', { minimumFractionDigits: 5, maximumFractionDigits: 5 })} €`;
+                this.saveState();
             }
         }
 
-        // Restore saved earnings if timer was stopped
-        const savedEarnings = localStorage.getItem(this.storageKeys.earnings);
-        if (savedEarnings !== null && !state?.isRunning) {
-            this.totalEarnings = parseFloat(savedEarnings);
-            this.mainCounter.textContent = `${this.totalEarnings.toLocaleString('de-DE', { minimumFractionDigits: 5, maximumFractionDigits: 5 })} €`;
-        }
-
-        // Restore saved work hours (base value only, no current session)
+        // Restore saved work hours
         const savedWorkHours = localStorage.getItem(this.storageKeys.totalWorkHours);
         if (savedWorkHours !== null) {
             this.baseWorkHours = parseFloat(savedWorkHours);
@@ -166,8 +154,7 @@ class EarningsCalculator {
     resetEarnings() {
         this.totalEarnings = 0;
         this.mainCounter.textContent = '0,00000 €';
-        localStorage.setItem(this.storageKeys.earnings, '0');
-        this.saveState();
+        this.saveState(); // This now saves earnings in timerState
     }
 
     updateCalculations() {
