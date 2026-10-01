@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-Time Earnings Calculator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Real-Time Earnings Calculator</h1>
+            <p>Visualize your income flow second-by-second. Convert your salary into a live ticker and see the true value of your time.</p>
+        </header>
+
+        <div class="calculator-card">
+            <div class="earnings-display">
+                <h2>CURRENT SESSION EARNINGS</h2>
+                <div class="main-counter" id="mainCounter">0,00000 €</div>
+                <div class="metrics">
+                    <div class="metric">
+                        <div class="value" id="workHours">2.080</div>
+                        <div class="label">WORK HOURS/YR</div>
+                    </div>
+                    <div class="metric">
+                        <div class="value per-hour" id="perHour">0,00€</div>
+                        <div class="label">PER HOUR</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="controls">
+                <div class="input-group">
+                    <label for="income">INCOME AMOUNT</label>
+                    <input type="number" id="income" value="4000" placeholder="4000">
+                    <span class="currency">€</span>
+                </div>
+
+                <div class="input-group">
+                    <label for="frequency">FREQUENCY</label>
+                    <select id="frequency">
+                        <option value="monthly">Monthly Salary</option>
+                        <option value="yearly">Yearly Salary</option>
+                        <option value="weekly">Weekly Salary</option>
+                        <option value="daily">Daily Salary</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label for="hoursPerWeek">HOURS/WEEK</label>
+                    <input type="number" id="hoursPerWeek" value="40" placeholder="40">
+                </div>
+
+                <button class="start-button" id="startButton">
+                    <span class="play-icon">▶</span> START TIMER
+                </button>
+            </div>
+
+            <div class="comparison">
+                <p>While you earned <span id="userEarnings">0,00€</span>, Jeff Bezos earned <span id="bezosEarnings">0,00€</span></p>
+                <p class="footnote">*Based on average annual wealth increase</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

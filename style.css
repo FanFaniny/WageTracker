@@ -1,0 +1,212 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a2f1a 100%);
+    color: #ffffff;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.container {
+    max-width: 500px;
+    width: 100%;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+header h1 {
+    font-size: 2.2em;
+    margin-bottom: 10px;
+    color: #00ff88;
+}
+
+header p {
+    color: #cccccc;
+    line-height: 1.4;
+    font-size: 0.95em;
+}
+
+.calculator-card {
+    background: rgba(20, 30, 20, 0.9);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0, 255, 136, 0.1);
+    border: 1px solid rgba(0, 255, 136, 0.2);
+}
+
+.earnings-display {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.earnings-display h2 {
+    font-size: 0.9em;
+    color: #888888;
+    margin-bottom: 15px;
+    letter-spacing: 1px;
+}
+
+.main-counter {
+    font-size: 3em;
+    font-weight: bold;
+    color: #00ff88;
+    margin-bottom: 20px;
+    font-family: 'Courier New', monospace;
+}
+
+.metrics {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.metric {
+    flex: 1;
+    text-align: center;
+}
+
+.metric .value {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #ffffff;
+    margin-bottom: 5px;
+}
+
+.metric .value.per-hour {
+    color: #00ff88;
+}
+
+.metric .label {
+    font-size: 0.8em;
+    color: #888888;
+    letter-spacing: 1px;
+}
+
+.controls {
+    margin-bottom: 20px;
+}
+
+.input-group {
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.input-group label {
+    display: block;
+    font-size: 0.8em;
+    color: #888888;
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+}
+
+.input-group input,
+.input-group select {
+    width: 100%;
+    padding: 12px 15px;
+    background: rgba(40, 50, 40, 0.8);
+    border: 1px solid rgba(0, 255, 136, 0.3);
+    border-radius: 10px;
+    color: #ffffff;
+    font-size: 1em;
+}
+
+.input-group input:focus,
+.input-group select:focus {
+    outline: none;
+    border-color: #00ff88;
+    box-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
+}
+
+.currency {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #888888;
+    pointer-events: none;
+}
+
+.start-button {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, #00ff88 0%, #00cc66 100%);
+    border: none;
+    border-radius: 12px;
+    color: #000000;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.start-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 255, 136, 0.4);
+}
+
+.start-button.stop {
+    background: linear-gradient(135deg, #ff6b35 0%, #ff4500 100%);
+    color: #ffffff;
+}
+
+.play-icon {
+    font-size: 1.2em;
+}
+
+.comparison {
+    text-align: center;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.comparison p {
+    font-size: 0.9em;
+    color: #cccccc;
+    margin-bottom: 5px;
+}
+
+.comparison .footnote {
+    font-size: 0.75em;
+    color: #888888;
+    font-style: italic;
+}
+
+#userEarnings,
+#bezosEarnings {
+    color: #00ff88;
+    font-weight: bold;
+}
+
+@media (max-width: 600px) {
+    .container {
+        padding: 10px;
+    }
+    
+    .calculator-card {
+        padding: 20px;
+    }
+    
+    .main-counter {
+        font-size: 2.5em;
+    }
+    
+    header h1 {
+        font-size: 1.8em;
+    }
+}
