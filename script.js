@@ -58,7 +58,7 @@ class EarningsCalculator {
 
         // Calculate hourly rate
         const hourlyRate = annualIncome / workHoursPerYear;
-        this.perHour.textContent = `${hourlyRate.toFixed(2)}€`;
+        this.perHour.textContent = `${hourlyRate.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}€`;
 
         // Calculate earnings per second (only during work hours)
         this.earningsPerSecond = hourlyRate / 3600; // 3600 seconds in an hour
@@ -101,23 +101,16 @@ class EarningsCalculator {
         this.totalEarnings = this.earningsPerSecond * elapsedSeconds;
         
         // Update main counter
-        this.mainCounter.textContent = `${this.totalEarnings.toFixed(5)} €`;
+        this.mainCounter.textContent = `${this.totalEarnings.toLocaleString('de-DE', { minimumFractionDigits: 5, maximumFractionDigits: 5 })} €`;
         
         // Update comparison earnings
-        this.userEarnings.textContent = `${this.totalEarnings.toFixed(2)}€`;
+        this.userEarnings.textContent = `${this.totalEarnings.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}€`;
         
         const bezosTotal = this.bezosEarningsPerSecond * elapsedSeconds;
         this.bezosEarnings.textContent = `${bezosTotal.toLocaleString('de-DE', {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2
         })}€`;
-    }
-
-    formatNumber(num) {
-        return num.toLocaleString('de-DE', {
-            minimumFractionDigits: 5,
-            maximumFractionDigits: 5
-        });
     }
 }
 
