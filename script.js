@@ -34,6 +34,7 @@ class EarningsCalculator {
         this.frequencySelect = document.getElementById('frequency');
         this.hoursPerWeekInput = document.getElementById('hoursPerWeek');
         this.startButton = document.getElementById('startButton');
+        this.resetEarningsBtn = document.getElementById('resetEarningsBtn'); // Fixed: add missing reset button initialization
         
         // New tracker elements
         this.trackerHours = document.getElementById('trackerHours');
@@ -49,8 +50,12 @@ class EarningsCalculator {
         this.incomeInput.addEventListener('input', () => this.updateCalculations());
         this.frequencySelect.addEventListener('change', () => this.updateCalculations());
         this.hoursPerWeekInput.addEventListener('input', () => this.updateCalculations());
-        this.resetEarningsBtn = document.getElementById('resetEarningsBtn');
-        this.resetEarningsBtn.addEventListener('click', () => this.resetEarnings());
+        
+        // Fixed: add safety check for reset earnings button
+        if (this.resetEarningsBtn) {
+            this.resetEarningsBtn.addEventListener('click', () => this.resetEarnings());
+        }
+        
         this.resetTrackerBtn.addEventListener('click', () => this.resetWorkHoursTracker());
         
         // New: manual hours input handlers
@@ -87,17 +92,17 @@ class EarningsCalculator {
         const savedHoursPerWeek = localStorage.getItem(this.storageKeys.hoursPerWeek);
         if (savedHoursPerWeek !== null) this.hoursPerWeekInput.value = savedHoursPerWeek;
 
-        // Restore timer state (resume if it was running when page closed)
+        // Restore timer state (do NOT auto-resume to avoid double-counting)
         const savedTimerState = localStorage.getItem(this.storageKeys.timerState);
         let state = null;
         if (savedTimerState) {
             state = JSON.parse(savedTimerState);
             if (state.isRunning) {
-                this.isRunning = true;
-                this.startTime = state.startTime;
+                // Timer was running when page closed - stop it and save earnings
+                this.isRunning = false;
                 this.totalEarnings = state.totalEarnings;
-                this.startTimer(false); // Don't reset start time when resuming
-                this.updateEarnings();
+                this.mainCounter.textContent = `${this.totalEarnings.toLocaleString('de-DE', { minimumFractionDigits: 5, maximumFractionDigits: 5 })} €`;
+                this.saveState(); // Save as stopped
             } else {
                 this.totalEarnings = state.totalEarnings || 0;
                 this.mainCounter.textContent = `${this.totalEarnings.toLocaleString('de-DE', { minimumFractionDigits: 5, maximumFractionDigits: 5 })} €`;
@@ -134,6 +139,9 @@ class EarningsCalculator {
 
     // New: Update work hours tracker display (H:M:S format)
     updateWorkHoursTracker() {
+        // Fixed: add safety check for tracker elements
+        if (!this.trackerHours || !this.trackerMinutes || !this.trackerSeconds) return;
+        
         const totalSeconds = Math.floor(this.totalWorkHours * 3600);
         const hours = Math.floor(totalSeconds / 3600);
         const minutes = Math.floor((totalSeconds % 3600) / 60);
