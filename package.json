@@ -4,7 +4,8 @@
   "description": "Real-Time Earnings Calculator",
   "main": "index.html",
   "scripts": {
-    "start": "npx serve ."
+    "start": "npx serve .",
+    "lint": "eslint . --ext .js"
   },
   "keywords": [],
   "author": "",
