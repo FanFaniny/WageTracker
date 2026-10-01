@@ -168,29 +168,58 @@ header p {
     font-size: 1.2em;
 }
 
-.comparison {
-    text-align: center;
-    margin-top: 20px;
-    padding-top: 20px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+.work-hours-tracker {
+  text-align: center;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.comparison p {
-    font-size: 0.9em;
-    color: #cccccc;
-    margin-bottom: 5px;
+.tracker-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
 }
 
-.comparison .footnote {
-    font-size: 0.75em;
-    color: #888888;
-    font-style: italic;
+.tracker-header span {
+  font-size: 0.8em;
+  color: #888888;
+  letter-spacing: 1px;
+  text-transform: uppercase;
 }
 
-#userEarnings,
-#bezosEarnings {
-    color: #00ff88;
-    font-weight: bold;
+.reset-tracker-btn {
+  background: transparent;
+  border: 1px solid #ff6b35;
+  color: #ff6b35;
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 0.75em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.reset-tracker-btn:hover {
+  background: #ff6b35;
+  color: #ffffff;
+}
+
+.tracker-value {
+  font-size: 2em;
+  font-weight: bold;
+  color: #00ff88;
+  margin-bottom: 5px;
+  font-family: 'Courier New', monospace;
+}
+
+.tracker-label {
+  font-size: 0.8em;
+  color: #888888;
+  letter-spacing: 1px;
+  text-transform: uppercase;
 }
 
 @media (max-width: 600px) {
